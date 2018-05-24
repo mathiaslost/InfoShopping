@@ -1,0 +1,12 @@
+C:\Users\opet\source\repos\InfoShopping\UI.Web\bin\Debug\netcoreapp2.0\UI.Web.deps.json
+C:\Users\opet\source\repos\InfoShopping\UI.Web\bin\Debug\netcoreapp2.0\UI.Web.runtimeconfig.json
+C:\Users\opet\source\repos\InfoShopping\UI.Web\bin\Debug\netcoreapp2.0\UI.Web.runtimeconfig.dev.json
+C:\Users\opet\source\repos\InfoShopping\UI.Web\bin\Debug\netcoreapp2.0\UI.Web.dll
+C:\Users\opet\source\repos\InfoShopping\UI.Web\bin\Debug\netcoreapp2.0\UI.Web.pdb
+C:\Users\opet\source\repos\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UI.Web.csprojResolveAssemblyReference.cache
+C:\Users\opet\source\repos\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UI.Web.csproj.CoreCompileInputs.cache
+C:\Users\opet\source\repos\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UserSecretsAssemblyInfo.cs
+C:\Users\opet\source\repos\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UI.Web.AssemblyInfoInputs.cache
+C:\Users\opet\source\repos\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UI.Web.AssemblyInfo.cs
+C:\Users\opet\source\repos\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UI.Web.dll
+C:\Users\opet\source\repos\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UI.Web.pdb
