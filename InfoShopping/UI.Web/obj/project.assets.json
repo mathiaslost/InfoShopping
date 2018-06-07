@@ -13133,11 +13133,11 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\Users\\opet\\source\\repos\\InfoShopping\\UI.Web\\UI.Web.csproj",
+      "projectUniqueName": "C:\\Users\\opet\\Documents\\GitHub\\InfoShopping\\InfoShopping\\UI.Web\\UI.Web.csproj",
       "projectName": "UI.Web",
-      "projectPath": "C:\\Users\\opet\\source\\repos\\InfoShopping\\UI.Web\\UI.Web.csproj",
+      "projectPath": "C:\\Users\\opet\\Documents\\GitHub\\InfoShopping\\InfoShopping\\UI.Web\\UI.Web.csproj",
       "packagesPath": "C:\\Users\\opet\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\opet\\source\\repos\\InfoShopping\\UI.Web\\obj\\",
+      "outputPath": "C:\\Users\\opet\\Documents\\GitHub\\InfoShopping\\InfoShopping\\UI.Web\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
