@@ -11,5 +11,8 @@ namespace DataAPI.Models
         public String Nome { get; set; }
         public long cnpj { get; set; }
         public String NomeFantasia { get; set; }
+
+        public int EnderecoId { get; set; }
+        public EnderecoModel Endereco { get; set; }
     }
 }

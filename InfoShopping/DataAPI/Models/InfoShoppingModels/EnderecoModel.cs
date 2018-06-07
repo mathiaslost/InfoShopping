@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataAPI.Models.InfoShoppingModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,5 +14,8 @@ namespace DataAPI.Models
         public String Bairro { get; set; }
         public String Complemento { get; set; }
         public long Cep { get; set; }
+
+        public int CidadeId { get; set; }
+        public CidadeModel Cidade { get; set; }
     }
 }
