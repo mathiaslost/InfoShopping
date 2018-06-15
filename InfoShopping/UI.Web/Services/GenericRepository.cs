@@ -14,6 +14,7 @@ namespace UI.Web.Services
 
         protected readonly Microsoft.EntityFrameworkCore.DbSet<T> DbSet;
 
+        public object EstadoModel => throw new NotImplementedException();
         public object CidadeModel => throw new NotImplementedException();
 
         public GenericRepository(Data.ApplicationDbContext context)
@@ -121,6 +122,11 @@ namespace UI.Web.Services
         }
 
         public Task SaveChangesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(int id, EstadoModel estadoModel)
         {
             throw new NotImplementedException();
         }

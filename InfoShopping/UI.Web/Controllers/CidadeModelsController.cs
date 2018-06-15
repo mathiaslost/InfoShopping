@@ -38,7 +38,8 @@ namespace UI.Web.Controllers
                 return NotFound();
             }
 
-            var cidadeModel = await _repositoryCidade.GetAsync(id);
+            var cidadeModel = await _repositoryCidade.GetAsync(id.Value);
+
             if (cidadeModel == null)
             {
                 return NotFound();
@@ -50,7 +51,7 @@ namespace UI.Web.Controllers
         // GET: CidadeModels/Create
         public IActionResult Create()
         {
-            ViewData["EstadoId"] = new SelectList(_repositoryCidade.GetAll(), "EstadoId", "Nome");
+            ViewData["EstadoId"] = new SelectList(_repositoryEstado.GetAll(), "EstadoId", "Nome");
             return View();
         }
 

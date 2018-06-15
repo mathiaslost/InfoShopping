@@ -12,17 +12,18 @@ namespace UI.Web.Controllers
 {
     public class EstadoModelsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Services.IGenericRepository<EstadoModel> _repositoryEstado;
 
-        public EstadoModelsController(ApplicationDbContext context)
+        public EstadoModelsController(Services.IGenericRepository<EstadoModel> repoEstado)
         {
-            _context = context;
+            _repositoryEstado = repoEstado;
         }
 
         // GET: EstadoModels
         public async Task<IActionResult> Index()
         {
-            return View(await _context.EstadoModel.ToListAsync());
+            var applicationDbContext = await _repositoryEstado.GetAllAsync();
+            return View(applicationDbContext);
         }
 
         // GET: EstadoModels/Details/5
@@ -33,8 +34,7 @@ namespace UI.Web.Controllers
                 return NotFound();
             }
 
-            var estadoModel = await _context.EstadoModel
-                .SingleOrDefaultAsync(m => m.EstadoId == id);
+            var estadoModel = await _repositoryEstado.GetAsync(id);
             if (estadoModel == null)
             {
                 return NotFound();
@@ -58,8 +58,7 @@ namespace UI.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(estadoModel);
-                await _context.SaveChangesAsync();
+                await _repositoryEstado.InsertAsync(estadoModel);
                 return RedirectToAction(nameof(Index));
             }
             return View(estadoModel);
@@ -69,11 +68,10 @@ namespace UI.Web.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var estadoModel = await _context.EstadoModel.SingleOrDefaultAsync(m => m.EstadoId == id);
+            var estadoModel = await _repositoryEstado.GetAllAsync(m => m.EstadoId == id);
+
             if (estadoModel == null)
             {
                 return NotFound();
@@ -95,22 +93,8 @@ namespace UI.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(estadoModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EstadoModelExists(estadoModel.EstadoId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _repositoryEstado.UpdateAsync(id, estadoModel);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(estadoModel);
@@ -124,8 +108,7 @@ namespace UI.Web.Controllers
                 return NotFound();
             }
 
-            var estadoModel = await _context.EstadoModel
-                .SingleOrDefaultAsync(m => m.EstadoId == id);
+            var estadoModel = await _repositoryEstado.GetAsync(id);
             if (estadoModel == null)
             {
                 return NotFound();
@@ -139,15 +122,8 @@ namespace UI.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var estadoModel = await _context.EstadoModel.SingleOrDefaultAsync(m => m.EstadoId == id);
-            _context.EstadoModel.Remove(estadoModel);
-            await _context.SaveChangesAsync();
+            await _repositoryEstado.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool EstadoModelExists(int id)
-        {
-            return _context.EstadoModel.Any(e => e.EstadoId == id);
         }
     }
 }
