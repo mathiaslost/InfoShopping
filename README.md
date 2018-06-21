@@ -1,1 +1,2 @@
 # InfoShopping
+**Gabriel Mathias**
