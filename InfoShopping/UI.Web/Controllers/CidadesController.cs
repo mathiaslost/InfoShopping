@@ -10,12 +10,12 @@ using UI.Web.Models;
 
 namespace UI.Web.Controllers
 {
-    public class CidadeModelsController : Controller
+    public class CidadesController : Controller
     {
         private readonly Services.IGenericRepository<CidadeModel> _repositoryCidade;
         private readonly Services.IGenericRepository<EstadoModel> _repositoryEstado;
 
-        public CidadeModelsController(
+        public CidadesController(
             Services.IGenericRepository<CidadeModel> repository,
             Services.IGenericRepository<EstadoModel> repoEstado)
         {
@@ -24,9 +24,10 @@ namespace UI.Web.Controllers
         }
 
         // GET: CidadeModels
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            var applicationDbContext = await _repositoryCidade.GetAllAsync(c => c.Estado);
+            var applicationDbContext = await _repositoryCidade
+                .GetAllAsync(c => id == null || c.EstadoId == id, c => c.Estado);
             return View(applicationDbContext);
         }
 
@@ -77,12 +78,14 @@ namespace UI.Web.Controllers
             if (id == null)
                 return NotFound();
 
-            var cidadeModel = await _repositoryCidade.GetAllAsync(m => m.CidadeId == id);
+            var cidadeModel = await _repositoryCidade.GetAsync(id.Value);
 
             if (cidadeModel == null)
                 return NotFound();
 
-            ViewData["EstadoId"] = new SelectList(await _repositoryCidade.GetAllAsync(), "EstadoId", "Nome");
+            var list = await _repositoryEstado.GetAllAsync();
+
+            ViewData["EstadoId"] = new SelectList(list, "EstadoId", "Nome", cidadeModel.EstadoId);
             return View(cidadeModel);
         }
 

@@ -28,14 +28,21 @@ namespace UI.Web.Services
             return DbSet.Find(id);
         }
 
-        public virtual List<T> GetAll(params Expression<Func<T, object>>[] includeProperties)
+        public virtual List<T> GetAll()
+        {
+            return DbSet.ToList();
+        }
+
+        public virtual List<T> GetAll(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] includeProperties)
         {
             IQueryable<T> queryable = DbSet;
 
             foreach (var includeProperty in includeProperties)
                 queryable = queryable.Include(includeProperty);
 
-            return queryable.ToList();
+            return queryable
+                .Where(where)
+                .ToList();
         }
 
         public virtual bool Update(object id, T updated)
@@ -55,14 +62,21 @@ namespace UI.Web.Services
             return true;
         }
 
-        public virtual async Task<List<T>> GetAllAsync(params Expression<Func<T, object>>[] includeProperties)
+        public virtual async Task<List<T>> GetAllAsync ()
+        {
+            return await DbSet.ToListAsync();
+        }
+
+        public virtual async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] includeProperties)
         {
             IQueryable<T> queryable = DbSet;
 
             foreach (var includeProperty in includeProperties)
                 queryable = queryable.Include(includeProperty);
 
-            return await queryable.ToListAsync();
+            return await queryable
+                .Where(where)
+                .ToListAsync();
         }
 
         public virtual async Task<T> GetAsync(object id)
@@ -126,14 +140,25 @@ namespace UI.Web.Services
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(int id, EstadoModel estadoModel)
+        public async Task<bool> UpdateAsync(int id, T updated)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(int id, CidadeModel cidadeModel)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                Context.Update(updated);
+                await Context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!Exists(id))
+                {
+                    return false;
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
     }
 }

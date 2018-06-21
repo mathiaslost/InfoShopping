@@ -70,7 +70,7 @@ namespace UI.Web.Controllers
             if (id == null)
                 return NotFound();
 
-            var estadoModel = await _repositoryEstado.GetAllAsync(m => m.EstadoId == id);
+            var estadoModel = await _repositoryEstado.GetAsync(id.Value);
 
             if (estadoModel == null)
             {
