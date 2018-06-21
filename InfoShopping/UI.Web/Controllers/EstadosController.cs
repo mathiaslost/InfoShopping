@@ -10,11 +10,11 @@ using UI.Web.Models;
 
 namespace UI.Web.Controllers
 {
-    public class EstadoModelsController : Controller
+    public class EstadosController : Controller
     {
         private readonly Services.IGenericRepository<EstadoModel> _repositoryEstado;
 
-        public EstadoModelsController(Services.IGenericRepository<EstadoModel> repoEstado)
+        public EstadosController(Services.IGenericRepository<EstadoModel> repoEstado)
         {
             _repositoryEstado = repoEstado;
         }

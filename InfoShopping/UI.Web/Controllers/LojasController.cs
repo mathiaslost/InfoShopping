@@ -10,11 +10,11 @@ using UI.Web.Models;
 
 namespace UI.Web.Controllers
 {
-    public class LojaModelsController : Controller
+    public class LojasController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public LojaModelsController(ApplicationDbContext context)
+        public LojasController(ApplicationDbContext context)
         {
             _context = context;
         }

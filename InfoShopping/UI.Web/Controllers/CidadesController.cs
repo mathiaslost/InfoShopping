@@ -40,6 +40,7 @@ namespace UI.Web.Controllers
             }
 
             var cidadeModel = await _repositoryCidade.GetAsync(id.Value);
+            ViewData["EstadoId"] = new SelectList(_repositoryEstado.GetAll(), "EstadoId", "Nome");
 
             if (cidadeModel == null)
             {

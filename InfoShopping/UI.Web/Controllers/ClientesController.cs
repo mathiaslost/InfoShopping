@@ -10,20 +10,25 @@ using UI.Web.Models;
 
 namespace UI.Web.Controllers
 {
-    public class ClienteModelsController : Controller
+    public class ClientesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Services.IGenericRepository<ClienteModel> _repositoryCliente;
+        private readonly Services.IGenericRepository<EnderecoModel> _repositoryEndereco;
 
-        public ClienteModelsController(ApplicationDbContext context)
+        public ClientesController(
+            Services.IGenericRepository<ClienteModel> repository,
+            Services.IGenericRepository<EnderecoModel> repoEndereco)
         {
-            _context = context;
+            _repositoryCliente = repository;
+            _repositoryEndereco = repoEndereco;
         }
 
         // GET: ClienteModels
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            var applicationDbContext = _context.ClienteModel.Include(c => c.Endereco);
-            return View(await applicationDbContext.ToListAsync());
+            var applicationDbContext = await _repositoryCliente
+                .GetAllAsync(c => id == null || c.EnderecoId == id, c => c.Endereco);
+            return View(applicationDbContext);
         }
 
         // GET: ClienteModels/Details/5
@@ -34,9 +39,9 @@ namespace UI.Web.Controllers
                 return NotFound();
             }
 
-            var clienteModel = await _context.ClienteModel
-                .Include(c => c.Endereco)
-                .SingleOrDefaultAsync(m => m.ClienteId == id);
+            var clienteModel = await _repositoryCliente.GetAsync(id.Value);
+            ViewData["EnderecoId"] = new SelectList(_repositoryEndereco.GetAll(), "EnderecoId", "Rua");
+
             if (clienteModel == null)
             {
                 return NotFound();
@@ -48,7 +53,7 @@ namespace UI.Web.Controllers
         // GET: ClienteModels/Create
         public IActionResult Create()
         {
-            ViewData["EnderecoId"] = new SelectList(_context.Set<EnderecoModel>(), "EnderecoId", "EnderecoId");
+            ViewData["EnderecoId"] = new SelectList(_repositoryEndereco.GetAll(), "EnderecoId", "Rua");
             return View();
         }
 
@@ -61,11 +66,10 @@ namespace UI.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(clienteModel);
-                await _context.SaveChangesAsync();
+                await _repositoryCliente.InsertAsync(clienteModel);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Set<EnderecoModel>(), "EnderecoId", "EnderecoId", clienteModel.EnderecoId);
+            ViewData["EnderecoId"] = new SelectList(await _repositoryCliente.GetAllAsync(), "EnderecoId", "Rua", clienteModel.EnderecoId);
             return View(clienteModel);
         }
 
@@ -73,16 +77,16 @@ namespace UI.Web.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var clienteModel = await _context.ClienteModel.SingleOrDefaultAsync(m => m.ClienteId == id);
+            var clienteModel = await _repositoryCliente.GetAsync(id.Value);
+
             if (clienteModel == null)
-            {
                 return NotFound();
-            }
-            ViewData["EnderecoId"] = new SelectList(_context.Set<EnderecoModel>(), "EnderecoId", "EnderecoId", clienteModel.EnderecoId);
+
+            var list = await _repositoryEndereco.GetAllAsync();
+
+            ViewData["EnderecoId"] = new SelectList(list, "EnderecoId", "Rua", clienteModel.EnderecoId);
             return View(clienteModel);
         }
 
@@ -100,25 +104,11 @@ namespace UI.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(clienteModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClienteModelExists(clienteModel.ClienteId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _repositoryCliente.UpdateAsync(id, clienteModel);
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Set<EnderecoModel>(), "EnderecoId", "EnderecoId", clienteModel.EnderecoId);
+            ViewData["EnderecoId"] = new SelectList(_repositoryEndereco.GetAll(), "EnderecoId", "Rua");
             return View(clienteModel);
         }
 
@@ -130,9 +120,7 @@ namespace UI.Web.Controllers
                 return NotFound();
             }
 
-            var clienteModel = await _context.ClienteModel
-                .Include(c => c.Endereco)
-                .SingleOrDefaultAsync(m => m.ClienteId == id);
+            var clienteModel = await _repositoryCliente.GetAsync(id);
             if (clienteModel == null)
             {
                 return NotFound();
@@ -141,20 +129,13 @@ namespace UI.Web.Controllers
             return View(clienteModel);
         }
 
-        // POST: ClienteModels/Delete/5
+        // POST: CidadeModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var clienteModel = await _context.ClienteModel.SingleOrDefaultAsync(m => m.ClienteId == id);
-            _context.ClienteModel.Remove(clienteModel);
-            await _context.SaveChangesAsync();
+            await _repositoryCliente.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ClienteModelExists(int id)
-        {
-            return _context.ClienteModel.Any(e => e.ClienteId == id);
         }
     }
 }

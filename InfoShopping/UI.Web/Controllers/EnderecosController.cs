@@ -10,20 +10,25 @@ using UI.Web.Models;
 
 namespace UI.Web.Controllers
 {
-    public class EnderecoModelsController : Controller
+    public class EnderecosController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Services.IGenericRepository<CidadeModel> _repositoryCidade;
+        private readonly Services.IGenericRepository<EnderecoModel> _repositoryEndereco;
 
-        public EnderecoModelsController(ApplicationDbContext context)
+        public EnderecosController(
+            Services.IGenericRepository<EnderecoModel> repository,
+            Services.IGenericRepository<CidadeModel> repoCidade)
         {
-            _context = context;
+            _repositoryEndereco = repository;
+            _repositoryCidade = repoCidade;
         }
 
         // GET: EnderecoModels
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            var applicationDbContext = _context.EnderecoModel.Include(e => e.Cidade);
-            return View(await applicationDbContext.ToListAsync());
+            var applicationDbContext = await _repositoryEndereco
+                .GetAllAsync(c => id == null || c.CidadeId == id, c => c.Cidade);
+            return View(applicationDbContext);
         }
 
         // GET: EnderecoModels/Details/5
@@ -34,9 +39,8 @@ namespace UI.Web.Controllers
                 return NotFound();
             }
 
-            var enderecoModel = await _context.EnderecoModel
-                .Include(e => e.Cidade)
-                .SingleOrDefaultAsync(m => m.EnderecoId == id);
+            var enderecoModel = await _repositoryEndereco.GetAsync(id.Value);
+
             if (enderecoModel == null)
             {
                 return NotFound();
@@ -48,7 +52,7 @@ namespace UI.Web.Controllers
         // GET: EnderecoModels/Create
         public IActionResult Create()
         {
-            ViewData["CidadeId"] = new SelectList(_context.CidadeModel, "CidadeId", "Nome");
+            ViewData["CidadeId"] = new SelectList(_repositoryCidade.GetAll(), "CidadeId", "Nome");
             return View();
         }
 
@@ -61,11 +65,10 @@ namespace UI.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(enderecoModel);
-                await _context.SaveChangesAsync();
+                await _repositoryEndereco.InsertAsync(enderecoModel);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CidadeId"] = new SelectList(_context.CidadeModel, "CidadeId", "Nome", enderecoModel.CidadeId);
+            ViewData["CidadeId"] = new SelectList(await _repositoryEndereco.GetAllAsync(), "CidadeId", "Nome", enderecoModel.CidadeId);
             return View(enderecoModel);
         }
 
@@ -73,16 +76,16 @@ namespace UI.Web.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var enderecoModel = await _context.EnderecoModel.SingleOrDefaultAsync(m => m.EnderecoId == id);
+            var enderecoModel = await _repositoryEndereco.GetAsync(id.Value);
+
             if (enderecoModel == null)
-            {
                 return NotFound();
-            }
-            ViewData["CidadeId"] = new SelectList(_context.CidadeModel, "CidadeId", "Nome", enderecoModel.CidadeId);
+
+            var list = await _repositoryCidade.GetAllAsync();
+
+            ViewData["CidadeId"] = new SelectList(list, "CidadeId", "Nome", enderecoModel.CidadeId);
             return View(enderecoModel);
         }
 
@@ -100,25 +103,11 @@ namespace UI.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(enderecoModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EnderecoModelExists(enderecoModel.EnderecoId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _repositoryEndereco.UpdateAsync(id, enderecoModel);
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CidadeId"] = new SelectList(_context.CidadeModel, "CidadeId", "Nome", enderecoModel.CidadeId);
+            ViewData["CidadeId"] = new SelectList(_repositoryCidade.GetAll(), "CidadeId", "Nome");
             return View(enderecoModel);
         }
 
@@ -130,9 +119,7 @@ namespace UI.Web.Controllers
                 return NotFound();
             }
 
-            var enderecoModel = await _context.EnderecoModel
-                .Include(e => e.Cidade)
-                .SingleOrDefaultAsync(m => m.EnderecoId == id);
+            var enderecoModel = await _repositoryEndereco.GetAsync(id);
             if (enderecoModel == null)
             {
                 return NotFound();
@@ -141,20 +128,13 @@ namespace UI.Web.Controllers
             return View(enderecoModel);
         }
 
-        // POST: EnderecoModels/Delete/5
+        // POST: CidadeModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var enderecoModel = await _context.EnderecoModel.SingleOrDefaultAsync(m => m.EnderecoId == id);
-            _context.EnderecoModel.Remove(enderecoModel);
-            await _context.SaveChangesAsync();
+            await _repositoryEndereco.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool EnderecoModelExists(int id)
-        {
-            return _context.EnderecoModel.Any(e => e.EnderecoId == id);
         }
     }
 }
