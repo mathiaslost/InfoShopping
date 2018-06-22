@@ -31,6 +31,7 @@
                 @Html.DisplayFor(modelItem => item.Estado.Nome)
             </td>
             <td>
+                <a asp-action="Index" asp-controller="Enderecos" asp-route-id="@item.CidadeId">Enderecos</a> |
                 <a asp-action="Edit" asp-route-id="@item.CidadeId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.CidadeId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.CidadeId">Delete</a>

@@ -13124,26 +13124,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\opet\\.nuget\\packages\\": {},
+    "C:\\Users\\Mathias\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
-    "restoreSettings": {
-      "hideWarningsAndErrors": true
-    },
     "restore": {
-      "projectUniqueName": "C:\\Users\\opet\\Documents\\GitHub\\InfoShopping\\InfoShopping\\UI.Web\\UI.Web.csproj",
+      "projectUniqueName": "C:\\Users\\Mathias\\Documents\\Banco de Dados\\InfoShopping\\InfoShopping\\UI.Web\\UI.Web.csproj",
       "projectName": "UI.Web",
-      "projectPath": "C:\\Users\\opet\\Documents\\GitHub\\InfoShopping\\InfoShopping\\UI.Web\\UI.Web.csproj",
-      "packagesPath": "C:\\Users\\opet\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\opet\\Documents\\GitHub\\InfoShopping\\InfoShopping\\UI.Web\\obj\\",
+      "projectPath": "C:\\Users\\Mathias\\Documents\\Banco de Dados\\InfoShopping\\InfoShopping\\UI.Web\\UI.Web.csproj",
+      "packagesPath": "C:\\Users\\Mathias\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Mathias\\Documents\\Banco de Dados\\InfoShopping\\InfoShopping\\UI.Web\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\opet\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Mathias\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
