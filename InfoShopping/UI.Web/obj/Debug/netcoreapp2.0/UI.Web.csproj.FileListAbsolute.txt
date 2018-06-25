@@ -41,8 +41,8 @@ C:\Users\Mathias\Documents\Banco de Dados\InfoShopping\InfoShopping\UI.Web\bin\D
 C:\Users\Mathias\Documents\Banco de Dados\InfoShopping\InfoShopping\UI.Web\bin\Debug\netcoreapp2.0\UI.Web.pdb
 C:\Users\Mathias\Documents\Banco de Dados\InfoShopping\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UI.Web.csprojAssemblyReference.cache
 C:\Users\Mathias\Documents\Banco de Dados\InfoShopping\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UI.Web.csproj.CoreCompileInputs.cache
-C:\Users\Mathias\Documents\Banco de Dados\InfoShopping\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UserSecretsAssemblyInfo.cs
 C:\Users\Mathias\Documents\Banco de Dados\InfoShopping\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UI.Web.AssemblyInfoInputs.cache
 C:\Users\Mathias\Documents\Banco de Dados\InfoShopping\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UI.Web.AssemblyInfo.cs
 C:\Users\Mathias\Documents\Banco de Dados\InfoShopping\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UI.Web.dll
 C:\Users\Mathias\Documents\Banco de Dados\InfoShopping\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UI.Web.pdb
+C:\Users\Mathias\Documents\Banco de Dados\InfoShopping\InfoShopping\UI.Web\obj\Debug\netcoreapp2.0\UserSecretsAssemblyInfo.cs

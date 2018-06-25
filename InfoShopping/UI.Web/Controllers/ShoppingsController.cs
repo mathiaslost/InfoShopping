@@ -12,18 +12,23 @@ namespace UI.Web.Controllers
 {
     public class ShoppingsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Services.IGenericRepository<ShoppingModel> _repositoryShopping;
+        private readonly Services.IGenericRepository<EnderecoModel> _repositoryEndereco;
 
-        public ShoppingsController(ApplicationDbContext context)
+        public ShoppingsController(
+            Services.IGenericRepository<ShoppingModel> repository,
+            Services.IGenericRepository<EnderecoModel> repoEndereco)
         {
-            _context = context;
+            _repositoryShopping = repository;
+            _repositoryEndereco = repoEndereco;
         }
 
         // GET: ShoppingModels
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            var applicationDbContext = _context.ShoppingModel.Include(s => s.Endereco);
-            return View(await applicationDbContext.ToListAsync());
+            var applicationDbContext = await _repositoryShopping
+                .GetAllAsync(c => id == null || c.EnderecoId == id, c => c.Endereco);
+            return View(applicationDbContext);
         }
 
         // GET: ShoppingModels/Details/5
@@ -34,9 +39,9 @@ namespace UI.Web.Controllers
                 return NotFound();
             }
 
-            var shoppingModel = await _context.ShoppingModel
-                .Include(s => s.Endereco)
-                .SingleOrDefaultAsync(m => m.ShoppingId == id);
+            var shoppingModel = await _repositoryShopping.GetAsync(id.Value);
+            ViewData["EnderecoId"] = new SelectList(_repositoryEndereco.GetAll(), "EnderecoId", "Rua");
+
             if (shoppingModel == null)
             {
                 return NotFound();
@@ -45,14 +50,14 @@ namespace UI.Web.Controllers
             return View(shoppingModel);
         }
 
-        // GET: ShoppingModels/Create
+        // GET: CidadeModels/Create
         public IActionResult Create()
         {
-            ViewData["EnderecoId"] = new SelectList(_context.Set<EnderecoModel>(), "EnderecoId", "EnderecoId");
+            ViewData["EnderecoId"] = new SelectList(_repositoryEndereco.GetAll(), "EnderecoId", "Rua");
             return View();
         }
 
-        // POST: ShoppingModels/Create
+        // POST: CidadeModels/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -61,68 +66,53 @@ namespace UI.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(shoppingModel);
-                await _context.SaveChangesAsync();
+                await _repositoryShopping.InsertAsync(shoppingModel);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Set<EnderecoModel>(), "EnderecoId", "EnderecoId", shoppingModel.EnderecoId);
+            ViewData["EnderecoId"] = new SelectList(await _repositoryShopping.GetAllAsync(), "EnderecoId", "Rua", shoppingModel.EnderecoId);
             return View(shoppingModel);
         }
 
-        // GET: ShoppingModels/Edit/5
+        // GET: CidadeModels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var shoppingModel = await _context.ShoppingModel.SingleOrDefaultAsync(m => m.ShoppingId == id);
+            var shoppingModel = await _repositoryShopping.GetAsync(id.Value);
+
             if (shoppingModel == null)
-            {
                 return NotFound();
-            }
-            ViewData["EnderecoId"] = new SelectList(_context.Set<EnderecoModel>(), "EnderecoId", "EnderecoId", shoppingModel.EnderecoId);
+
+            var list = await _repositoryEndereco.GetAllAsync();
+
+            ViewData["EnderecoId"] = new SelectList(list, "EnderecoId", "Rua", shoppingModel.EnderecoId);
             return View(shoppingModel);
         }
 
-        // POST: ShoppingModels/Edit/5
+        // POST: CidadeModels/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ShoppingId,Nome,CNPJ,Email,EnderecoId")] ShoppingModel shoppingModel)
         {
-            if (id != shoppingModel.ShoppingId)
+            if (id != shoppingModel.EnderecoId)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(shoppingModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ShoppingModelExists(shoppingModel.ShoppingId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _repositoryShopping.UpdateAsync(id, shoppingModel);
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Set<EnderecoModel>(), "EnderecoId", "EnderecoId", shoppingModel.EnderecoId);
+            ViewData["EnderecoId"] = new SelectList(_repositoryEndereco.GetAll(), "EnderecoId", "Rua");
             return View(shoppingModel);
         }
 
-        // GET: ShoppingModels/Delete/5
+        // GET: CidadeModels/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,9 +120,7 @@ namespace UI.Web.Controllers
                 return NotFound();
             }
 
-            var shoppingModel = await _context.ShoppingModel
-                .Include(s => s.Endereco)
-                .SingleOrDefaultAsync(m => m.ShoppingId == id);
+            var shoppingModel = await _repositoryShopping.GetAsync(id);
             if (shoppingModel == null)
             {
                 return NotFound();
@@ -141,20 +129,13 @@ namespace UI.Web.Controllers
             return View(shoppingModel);
         }
 
-        // POST: ShoppingModels/Delete/5
+        // POST: CidadeModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var shoppingModel = await _context.ShoppingModel.SingleOrDefaultAsync(m => m.ShoppingId == id);
-            _context.ShoppingModel.Remove(shoppingModel);
-            await _context.SaveChangesAsync();
+            await _repositoryShopping.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ShoppingModelExists(int id)
-        {
-            return _context.ShoppingModel.Any(e => e.ShoppingId == id);
         }
     }
 }

@@ -12,21 +12,26 @@ namespace UI.Web.Controllers
 {
     public class LojasController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Services.IGenericRepository<LojaModel> _repositoryLoja;
+        private readonly Services.IGenericRepository<ShoppingModel> _repositoryShopping;
 
-        public LojasController(ApplicationDbContext context)
+        public LojasController(
+            Services.IGenericRepository<LojaModel> repository,
+            Services.IGenericRepository<ShoppingModel> repoShopping)
         {
-            _context = context;
+            _repositoryLoja = repository;
+            _repositoryShopping = repoShopping;
         }
 
-        // GET: LojaModels
-        public async Task<IActionResult> Index()
+        // GET: CidadeModels
+        public async Task<IActionResult> Index(int? id)
         {
-            var applicationDbContext = _context.LojaModel.Include(l => l.Endereco);
-            return View(await applicationDbContext.ToListAsync());
+            var applicationDbContext = await _repositoryLoja
+                .GetAllAsync(c => id == null || c.ShoppingId == id, c => c.Shopping);
+            return View(applicationDbContext);
         }
 
-        // GET: LojaModels/Details/5
+        // GET: CidadeModels/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,9 +39,9 @@ namespace UI.Web.Controllers
                 return NotFound();
             }
 
-            var lojaModel = await _context.LojaModel
-                .Include(l => l.Endereco)
-                .SingleOrDefaultAsync(m => m.LojaId == id);
+            var lojaModel = await _repositoryLoja.GetAsync(id.Value);
+            ViewData["ShoppingId"] = new SelectList(_repositoryShopping.GetAll(), "ShoppingId", "Nome");
+
             if (lojaModel == null)
             {
                 return NotFound();
@@ -45,14 +50,14 @@ namespace UI.Web.Controllers
             return View(lojaModel);
         }
 
-        // GET: LojaModels/Create
+        // GET: CidadeModels/Create
         public IActionResult Create()
         {
-            ViewData["EnderecoId"] = new SelectList(_context.Set<EnderecoModel>(), "EnderecoId", "EnderecoId");
+            ViewData["ShoppingId"] = new SelectList(_repositoryShopping.GetAll(), "ShoppingId", "Nome");
             return View();
         }
 
-        // POST: LojaModels/Create
+        // POST: CidadeModels/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -61,32 +66,31 @@ namespace UI.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(lojaModel);
-                await _context.SaveChangesAsync();
+                await _repositoryLoja.InsertAsync(lojaModel);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Set<EnderecoModel>(), "EnderecoId", "EnderecoId", lojaModel.EnderecoId);
+            ViewData["ShoppingId"] = new SelectList(await _repositoryLoja.GetAllAsync(), "ShoppingId", "Nome", lojaModel.ShoppingId);
             return View(lojaModel);
         }
 
-        // GET: LojaModels/Edit/5
+        // GET: CidadeModels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var lojaModel = await _context.LojaModel.SingleOrDefaultAsync(m => m.LojaId == id);
+            var lojaModel = await _repositoryLoja.GetAsync(id.Value);
+
             if (lojaModel == null)
-            {
                 return NotFound();
-            }
-            ViewData["EnderecoId"] = new SelectList(_context.Set<EnderecoModel>(), "EnderecoId", "EnderecoId", lojaModel.EnderecoId);
+
+            var list = await _repositoryShopping.GetAllAsync();
+
+            ViewData["ShoppingId"] = new SelectList(await _repositoryLoja.GetAllAsync(), "ShoppingId", "Nome", lojaModel.ShoppingId);
             return View(lojaModel);
         }
 
-        // POST: LojaModels/Edit/5
+        // POST: CidadeModels/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -100,29 +104,15 @@ namespace UI.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(lojaModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LojaModelExists(lojaModel.LojaId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _repositoryLoja.UpdateAsync(id, lojaModel);
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Set<EnderecoModel>(), "EnderecoId", "EnderecoId", lojaModel.EnderecoId);
+            ViewData["ShoppingId"] = new SelectList(await _repositoryLoja.GetAllAsync(), "ShoppingId", "Nome", lojaModel.ShoppingId);
             return View(lojaModel);
         }
 
-        // GET: LojaModels/Delete/5
+        // GET: CidadeModels/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,9 +120,7 @@ namespace UI.Web.Controllers
                 return NotFound();
             }
 
-            var lojaModel = await _context.LojaModel
-                .Include(l => l.Endereco)
-                .SingleOrDefaultAsync(m => m.LojaId == id);
+            var lojaModel = await _repositoryLoja.GetAsync(id);
             if (lojaModel == null)
             {
                 return NotFound();
@@ -141,20 +129,13 @@ namespace UI.Web.Controllers
             return View(lojaModel);
         }
 
-        // POST: LojaModels/Delete/5
+        // POST: CidadeModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var lojaModel = await _context.LojaModel.SingleOrDefaultAsync(m => m.LojaId == id);
-            _context.LojaModel.Remove(lojaModel);
-            await _context.SaveChangesAsync();
+            await _repositoryLoja.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool LojaModelExists(int id)
-        {
-            return _context.LojaModel.Any(e => e.LojaId == id);
         }
     }
 }

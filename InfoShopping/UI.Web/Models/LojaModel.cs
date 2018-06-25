@@ -15,7 +15,7 @@ namespace UI.Web.Models
         public long cnpj { get; set; }
         public String NomeFantasia { get; set; }
 
-        public int EnderecoId { get; set; }
-        public EnderecoModel Endereco { get; set; }
+        public int ShoppingId { get; set; }
+        public ShoppingModel Shopping { get; set; }
     }
 }
