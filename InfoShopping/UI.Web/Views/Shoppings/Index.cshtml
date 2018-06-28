@@ -43,6 +43,7 @@
                 @Html.DisplayFor(modelItem => item.Endereco.Rua)
             </td>
             <td>
+                <a asp-action="Index" asp-controller="Lojas" asp-route-id="@item.ShoppingId">Lojas</a> |
                 <a asp-action="Edit" asp-route-id="@item.ShoppingId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ShoppingId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.ShoppingId">Delete</a>

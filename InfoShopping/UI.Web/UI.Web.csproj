@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Content Remove="Views\Home\Estados.cshtml" />
+    <Content Remove="wwwroot\images\sh2.png" />
   </ItemGroup>
 
 
@@ -21,6 +22,10 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.1" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\sh1.jpg" />
   </ItemGroup>
 
 </Project>

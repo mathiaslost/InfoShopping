@@ -3592,7 +3592,7 @@ tbody.collapse.in {
   outline: 0;
 }
 .dropdown-menu-right {
-  right: 0;
+  right: 43%;
   left: auto;
 }
 .dropdown-menu-left {

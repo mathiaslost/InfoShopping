@@ -26,14 +26,14 @@ namespace UI.Web.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
+            ViewData["Message"] = "O que é InfoShopping?";
 
             return View();
         }
 
         public IActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
+            ViewData["Message"] = "Contato dos desenvolvedores!";
 
             return View();
         }

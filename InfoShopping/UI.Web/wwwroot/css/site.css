@@ -17,6 +17,12 @@
 }
 
 /* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img {
+    width: 100%;
+    height: 100%
+}
+
+/* Make .svg files in the carousel display properly in older browsers */
 .carousel-inner .item img[src$=".svg"] {
     width: 100%;
 }

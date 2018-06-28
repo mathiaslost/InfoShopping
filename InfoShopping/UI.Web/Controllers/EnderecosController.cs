@@ -40,6 +40,7 @@ namespace UI.Web.Controllers
             }
 
             var enderecoModel = await _repositoryEndereco.GetAsync(id.Value);
+            ViewData["CidadeId"] = new SelectList(_repositoryCidade.GetAll(), "CidadeId", "Nome");
 
             if (enderecoModel == null)
             {
