@@ -10,8 +10,17 @@ namespace UI.Web.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly Services.IGenericRepository<EstadoModel> _repositoryEstado;
+
+        public HomeController(Services.IGenericRepository<EstadoModel> repoEstado)
+        {
+            _repositoryEstado = repoEstado;
+        }
+
         public IActionResult Index()
         {
+            ViewData["EstadoId"] = _repositoryEstado.GetAll();
+
             return View();
         }
 
