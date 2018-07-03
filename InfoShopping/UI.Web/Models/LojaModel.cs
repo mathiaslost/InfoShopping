@@ -11,6 +11,7 @@ namespace UI.Web.Models
         [Required]
         [Key]
         public int LojaId { get; set; }
+        public string OwnerId { get; set; }
         public String Nome { get; set; }
         public long cnpj { get; set; }
         public String NomeFantasia { get; set; }

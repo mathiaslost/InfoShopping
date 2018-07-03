@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,24 +12,33 @@ using UI.Web.Models;
 
 namespace UI.Web.Controllers
 {
+    [Authorize]
     public class LojasController : Controller
     {
         private readonly Services.IGenericRepository<LojaModel> _repositoryLoja;
         private readonly Services.IGenericRepository<ShoppingModel> _repositoryShopping;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public LojasController(
             Services.IGenericRepository<LojaModel> repository,
-            Services.IGenericRepository<ShoppingModel> repoShopping)
+            Services.IGenericRepository<ShoppingModel> repoShopping,
+            UserManager<ApplicationUser> userManager)
         {
             _repositoryLoja = repository;
             _repositoryShopping = repoShopping;
+            _userManager = userManager;
         }
 
         // GET: CidadeModels
         public async Task<IActionResult> Index(int? id)
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser == null)
+                return Challenge();
+
             var applicationDbContext = await _repositoryLoja
-                .GetAllAsync(c => id == null || c.ShoppingId == id, c => c.Shopping);
+                .GetAllAsync(c => c.OwnerId == currentUser.Id && (id == null || c.ShoppingId == id), c => c.Shopping);
             return View(applicationDbContext);
         }
 
@@ -66,6 +77,13 @@ namespace UI.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                var currentUser = await _userManager.GetUserAsync(User);
+
+                if (currentUser == null)
+                    return Unauthorized();
+
+                lojaModel.OwnerId = currentUser.Id;
+
                 await _repositoryLoja.InsertAsync(lojaModel);
                 return RedirectToAction(nameof(Index));
             }
@@ -104,6 +122,14 @@ namespace UI.Web.Controllers
 
             if (ModelState.IsValid)
             {
+
+                var currentUser = await _userManager.GetUserAsync(User);
+
+                if (currentUser == null)
+                    return Unauthorized();
+
+                lojaModel.OwnerId = currentUser.Id;
+
                 await _repositoryLoja.UpdateAsync(id, lojaModel);
 
                 return RedirectToAction(nameof(Index));

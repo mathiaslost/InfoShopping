@@ -260,6 +260,8 @@ namespace UI.Web.Data.Migrations
 
                     b.Property<string>("NomeFantasia");
 
+                    b.Property<string>("OwnerId");
+
                     b.Property<int>("ShoppingId");
 
                     b.Property<long>("cnpj");

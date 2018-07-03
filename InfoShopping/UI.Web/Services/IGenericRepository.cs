@@ -10,7 +10,10 @@ namespace UI.Web.Services
     {
         object EstadoModel { get; }
 
-        Task<List<T>> GetAllAsync();
+        
+
+
+    Task<List<T>> GetAllAsync();
         Task<List<T>> GetAllAsync(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] includeProperties);
         Task<T> GetAsync(object id);
         Task<bool> InsertAsync(T insert);
