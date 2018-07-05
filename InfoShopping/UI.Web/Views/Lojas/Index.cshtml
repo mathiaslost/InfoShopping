@@ -4,7 +4,13 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+@if (string.IsNullOrEmpty(ViewBag.Shopping))
+{
+    <h2>Index</h2>
+} else
+{
+    <h2>@ViewBag.Shopping</h2>
+}
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -21,33 +27,28 @@
             <th>
                 @Html.DisplayNameFor(model => model.NomeFantasia)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Shopping)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cnpj)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomeFantasia)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Shopping.Nome)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.LojaId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.LojaId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.LojaId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cnpj)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NomeFantasia)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.LojaId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.LojaId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.LojaId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -37,6 +37,9 @@ namespace UI.Web.Controllers
             if (currentUser == null)
                 return Challenge();
 
+            if (id.HasValue)
+                ViewData["Shopping"] = _repositoryShopping.Get(id).Nome;
+
             var applicationDbContext = await _repositoryLoja
                 .GetAllAsync(c => c.OwnerId == currentUser.Id && (id == null || c.ShoppingId == id), c => c.Shopping);
             return View(applicationDbContext);

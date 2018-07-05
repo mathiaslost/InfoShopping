@@ -37,8 +37,11 @@ namespace UI.Web.Controllers
             if (currentUser == null)
                 return Challenge();
 
+            var isAdm = await _userManager.IsInRoleAsync(currentUser, Constants.AdministratorRole);
+
             var applicationDbContext = await _repositoryCidade
-                .GetAllAsync(c => c.OwnerId == currentUser.Id && (id == null || c.EstadoId == id), c => c.Estado);
+                .GetAllAsync(c => (isAdm || c.OwnerId == currentUser.Id)
+                && (id == null || c.EstadoId == id), c => c.Estado);
             return View(applicationDbContext);
         }
 

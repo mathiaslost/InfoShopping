@@ -8,10 +8,6 @@ namespace UI.Web.Services
 {
     public interface IGenericRepository<T> where T : class
     {
-        object EstadoModel { get; }
-
-        
-
 
     Task<List<T>> GetAllAsync();
         Task<List<T>> GetAllAsync(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] includeProperties);
