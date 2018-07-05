@@ -17,6 +17,7 @@ namespace UI.Web.Models
         public String Nome { get; set; }
         [Required]
         public long Cpf { get; set; }
+        public string OwnerId { get; set; }
 
         public int EnderecoId { get; set; }
         public EnderecoModel Endereco { get; set; }

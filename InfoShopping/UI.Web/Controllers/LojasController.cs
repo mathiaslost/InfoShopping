@@ -104,7 +104,7 @@ namespace UI.Web.Controllers
 
             var list = await _repositoryShopping.GetAllAsync();
 
-            ViewData["ShoppingId"] = new SelectList(await _repositoryLoja.GetAllAsync(), "ShoppingId", "Nome", lojaModel.ShoppingId);
+            ViewData["ShoppingId"] = new SelectList(await _repositoryShopping.GetAllAsync(), "ShoppingId", "Nome", lojaModel.ShoppingId);
             return View(lojaModel);
         }
 

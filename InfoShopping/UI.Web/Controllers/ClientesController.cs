@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,20 +17,28 @@ namespace UI.Web.Controllers
     {
         private readonly Services.IGenericRepository<ClienteModel> _repositoryCliente;
         private readonly Services.IGenericRepository<EnderecoModel> _repositoryEndereco;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public ClientesController(
             Services.IGenericRepository<ClienteModel> repository,
-            Services.IGenericRepository<EnderecoModel> repoEndereco)
+            Services.IGenericRepository<EnderecoModel> repoEndereco,
+            UserManager<ApplicationUser> userManager)
         {
             _repositoryCliente = repository;
             _repositoryEndereco = repoEndereco;
+            _userManager = userManager;
         }
 
         // GET: ClienteModels
         public async Task<IActionResult> Index(int? id)
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser == null)
+                return Challenge();
+
             var applicationDbContext = await _repositoryCliente
-                .GetAllAsync(c => id == null || c.EnderecoId == id, c => c.Endereco);
+                .GetAllAsync(c => c.OwnerId == currentUser.Id && (id == null || c.EnderecoId == id), c => c.Endereco);
             return View(applicationDbContext);
         }
 
@@ -68,6 +77,13 @@ namespace UI.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                var currentUser = await _userManager.GetUserAsync(User);
+
+                if (currentUser == null)
+                    return Unauthorized();
+
+                clienteModel.OwnerId = currentUser.Id;
+
                 await _repositoryCliente.InsertAsync(clienteModel);
                 return RedirectToAction(nameof(Index));
             }

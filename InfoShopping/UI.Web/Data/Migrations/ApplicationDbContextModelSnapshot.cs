@@ -188,6 +188,8 @@ namespace UI.Web.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(100);
 
+                    b.Property<string>("OwnerId");
+
                     b.HasKey("CidadeId");
 
                     b.HasIndex("EstadoId");
@@ -207,6 +209,8 @@ namespace UI.Web.Data.Migrations
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100);
+
+                    b.Property<string>("OwnerId");
 
                     b.HasKey("ClienteId");
 
@@ -230,6 +234,8 @@ namespace UI.Web.Data.Migrations
 
                     b.Property<int>("Numero");
 
+                    b.Property<string>("OwnerId");
+
                     b.Property<string>("Rua");
 
                     b.HasKey("EnderecoId");
@@ -245,6 +251,8 @@ namespace UI.Web.Data.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Nome");
+
+                    b.Property<string>("OwnerId");
 
                     b.HasKey("EstadoId");
 
@@ -285,6 +293,8 @@ namespace UI.Web.Data.Migrations
                     b.Property<int>("EnderecoId");
 
                     b.Property<string>("Nome");
+
+                    b.Property<string>("OwnerId");
 
                     b.HasKey("ShoppingId");
 

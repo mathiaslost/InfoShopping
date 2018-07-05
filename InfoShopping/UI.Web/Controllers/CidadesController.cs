@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,20 +17,28 @@ namespace UI.Web.Controllers
     {
         private readonly Services.IGenericRepository<CidadeModel> _repositoryCidade;
         private readonly Services.IGenericRepository<EstadoModel> _repositoryEstado;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public CidadesController(
             Services.IGenericRepository<CidadeModel> repository,
-            Services.IGenericRepository<EstadoModel> repoEstado)
+            Services.IGenericRepository<EstadoModel> repoEstado,
+            UserManager<ApplicationUser> userManager)
         {
             _repositoryCidade = repository;
             _repositoryEstado = repoEstado;
+            _userManager = userManager;
         }
 
         // GET: CidadeModels
         public async Task<IActionResult> Index(int? id)
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser == null)
+                return Challenge();
+
             var applicationDbContext = await _repositoryCidade
-                .GetAllAsync(c => id == null || c.EstadoId == id, c => c.Estado);
+                .GetAllAsync(c => c.OwnerId == currentUser.Id && (id == null || c.EstadoId == id), c => c.Estado);
             return View(applicationDbContext);
         }
 
@@ -68,6 +77,13 @@ namespace UI.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                var currentUser = await _userManager.GetUserAsync(User);
+
+                if (currentUser == null)
+                    return Unauthorized();
+
+                cidadeModel.OwnerId = currentUser.Id;
+
                 await _repositoryCidade.InsertAsync(cidadeModel);
                 return RedirectToAction(nameof(Index));
             }

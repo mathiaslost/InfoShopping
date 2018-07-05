@@ -11,6 +11,7 @@ namespace UI.Web.Models
         [Required]
         [Key]
         public int EstadoId { get; set; }
+        public string OwnerId { get; set; }
         public String Nome { get; set; }
     }
 }

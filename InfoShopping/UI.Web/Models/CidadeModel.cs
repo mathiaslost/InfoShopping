@@ -14,6 +14,7 @@ namespace UI.Web.Models
         [Required]
         [StringLength(100)]
         public String Nome { get; set; }
+        public string OwnerId { get; set; }
 
         public int EstadoId { get; set; }
         public EstadoModel Estado { get; set; }

@@ -1,0 +1,54 @@
+﻿@model UI.Web.Models.View.ManageUsersViewModel
+
+@{
+    ViewData["Title"] = "Manage users";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h3>Administrators</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Administrators)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Everyone</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Everyone)
+        {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Email</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@user.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@user.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@user.Id">Delete</a>
+            </td>
+
+        </tr>
+
+        }
+    </tbody>
+</table>

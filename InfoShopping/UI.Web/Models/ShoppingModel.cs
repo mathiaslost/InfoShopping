@@ -11,6 +11,7 @@ namespace UI.Web.Models
         [Required]
         [Key]
         public int ShoppingId { get; set; }
+        public string OwnerId { get; set; }
         public String Nome { get; set; }
         public long CNPJ { get; set; }
         public String Email { get; set; }

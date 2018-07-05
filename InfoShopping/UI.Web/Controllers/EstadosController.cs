@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,16 +16,25 @@ namespace UI.Web.Controllers
     public class EstadosController : Controller
     {
         private readonly Services.IGenericRepository<EstadoModel> _repositoryEstado;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public EstadosController(Services.IGenericRepository<EstadoModel> repoEstado)
+        public EstadosController(Services.IGenericRepository<EstadoModel> repoEstado,
+            UserManager<ApplicationUser> userManager)
         {
             _repositoryEstado = repoEstado;
+            _userManager = userManager;
         }
 
         // GET: EstadoModels
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = await _repositoryEstado.GetAllAsync();
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser == null)
+                return Challenge();
+
+            var applicationDbContext = await _repositoryEstado
+                .GetAllAsync(c => c.OwnerId == currentUser.Id);
             return View(applicationDbContext);
         }
 
@@ -58,8 +68,16 @@ namespace UI.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EstadoId,Nome")] EstadoModel estadoModel)
         {
+         
             if (ModelState.IsValid)
             {
+                var currentUser = await _userManager.GetUserAsync(User);
+
+                if (currentUser == null)
+                    return Unauthorized();
+
+                estadoModel.OwnerId = currentUser.Id;
+
                 await _repositoryEstado.InsertAsync(estadoModel);
                 return RedirectToAction(nameof(Index));
             }

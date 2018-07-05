@@ -12,6 +12,7 @@ namespace UI.Web.Models
         [Required]
         [Key]
         public int EnderecoId { get; set; }
+        public string OwnerId { get; set; }
         public String Rua { get; set; }
         public int Numero { get; set; }
         public String Bairro { get; set; }
